@@ -4,7 +4,7 @@
 更新时间: 2011.12.06
 
 使用方法:
-用文本编辑器打开phNote.user.js, 配置插件并保存;
+用文本编辑器打开phNote.user.js, 按其中注释说明进行配置并保存;
 然后:
 Opera: 请将phNote.user.js放入JS文件夹中(千万不要修改".user.js"后缀名);
 Chrome: 请直接将phNote.user.js拖进浏览器窗口并执行安装;

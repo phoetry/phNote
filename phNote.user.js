@@ -14,12 +14,13 @@ null==sto||(
 			mainBG:"#cdeaf8",					// 主体背景色
 			dateParse:"yyyy/MM/dd",				// 日期格式, yyyy:年, MM:月, dd:日
 			setKeyboard:"shift+D"
-			/***若要禁用快捷键, 请设为空字符""或数字0
+			/***
+			*   若要禁用快捷键, 请设为空字符""或数字0
 			*   用加号组合快捷键, 支持Ctrl|Alt|Shift三个组合键, 不分大小写
 			*   若你所设置的按键无效, 可尝试将最后一位换成按键的keyCode(数字)
-			*   在浏览器地址栏输入"javascript:void(phNote.askKey());"
-			*   不含引号并回车, 然后按下你所需的键, 即可弹出对应的keyCode
-			*   例:'ctrl+alt+J','alt+ctrl+74','ctrl+shift+alt+192'...
+			*   举例:'ctrl+alt+J','alt+ctrl+74','ctrl+shift+alt+192'...
+			*   获取keyCode的方法: 在浏览器地址栏输入以下代码并回车, 然后按下你所需的键
+			*   javascript:void(document.addEventListener('keydown',function(e){alert(String.fromCharCode(e.keyCode)+' : '+e.keyCode)},!1))
 			***/
 		},
 		// 下面别动
@@ -74,11 +75,6 @@ null==sto||(
 					)
 				},$('.phnote_close',head));
 				return content;
-			},
-			askKey:function(){
-				bind('keydown',function(e){
-					alert(String.fromCharCode(e.keyCode)+' : '+e.keyCode)
-				})
 			},
 			setKey:function(){
 				var r=/^(?:alt|ctrl|meta|shift)$/i,

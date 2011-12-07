@@ -1,5 +1,6 @@
 // ==UserScript==
-// @name ~
+// @name phNote.user.js
+// @author http://phoetry.me/archives/phnote.html
 // @include http*
 // ==/UserScript==
 !function(sto){"use strict";
@@ -36,7 +37,7 @@ null==sto||(
 				isObj(items)?
 				Object.keys(items).forEach(function(t,z){
 					(z=items[t])&&
-					z.path===path&&
+					z.path==path&&
 					phNote.addNote(t,z);
 				}):items={};
 				pref.setKeyboard&&this.setKey();
@@ -50,12 +51,12 @@ null==sto||(
 					('innerHTML','<a class=phnote_save title=保存>s</a><a class=phnote_close title=删除>x</a>'+(note.modi?this.setDate(note.modi):'未保存'))()
 				),
 				content=box.appendChild(cEle('div')
-					('contentEditable',true)
+					('className','phnote_content')
 					('innerHTML',note.content||'')
-					('className','phnote_content')()
+					('contentEditable',true)()
 				),
 				save=function(e){
-					var now=new Date,modi='click'!==e.type&&note.modi;
+					var now=new Date,modi='click'!=e.type&&note.modi;
 					modi||(head.lastChild.nodeValue=phNote.setDate(now));
 					items[idx=idx||'p'+now]=note={
 						path:path,modi:modi||now,
@@ -221,7 +222,7 @@ null==sto||(
 			return(con||document).querySelector(z);
 		}
 		function isObj(z){
-			return{}.toString.call(z)==='[object Object]'&&'isPrototypeOf'in z;
+			return{}.toString.call(z)=='[object Object]'&&'isPrototypeOf'in z;
 		}
 		function isEmptyObj(z,t){
 			for(t in z)

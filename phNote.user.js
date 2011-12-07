@@ -31,15 +31,16 @@ null==sto||(
 			init:function(){
 				try{
 					items=JSON.parse(items);
-				}catch(e){log(items);
-					storage('phnote',null);
-				}
+				}catch(e){}
 				isObj(items)?
 				Object.keys(items).forEach(function(t,z){
 					(z=items[t])&&
 					z.path==path&&
 					phNote.addNote(t,z);
-				}):items={};
+				}):(log(items),
+					items={},
+					storage('phnote',null)
+				);
 				pref.setKeyboard&&this.setKey();
 			},
 			addNote:function(idx,note){

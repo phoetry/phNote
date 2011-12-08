@@ -37,7 +37,7 @@ null==sto||(
 					(z=items[t])&&
 					z.path==path&&
 					phNote.addNote(t,z);
-				}):(log(items),
+				}):(//log(items),
 					items={},
 					storage('phnote',null)
 				);

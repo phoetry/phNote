@@ -1,6 +1,9 @@
 // ==UserScript==
 // @name phNote.user.js
-// @author http://phoetry.me/archives/phnote.html
+// @version v0.2
+// @description 在你感兴趣的网页上添加便笺或笔记
+// @author phoetry (http://phoetry.me)
+// @url http://phoetry.me/archives/phnote.html
 // @include http*
 // ==/UserScript==
 !function(sto){"use strict";
@@ -26,17 +29,25 @@ null==sto||(
 		},
 		// 下面别动
 		items=storage('phnote'),path=location.pathname,
-		body=document.body,root=document.documentElement;
+		body=document.body,root=document.documentElement,W;
 		return{
 			init:function(){
 				try{
 					items=JSON.parse(items);
-				}catch(e){}
+				}catch(e){};
+				(W=location.search.slice(1).split('&').filter(function(t){
+					return~(W=t.indexOf('='))&&t[W+1]
+				}))[0]||(W=0);
 				isObj(items)?
 				Object.keys(items).forEach(function(t,z){
-					(z=items[t])&&
-					z.path==path&&
-					phNote.addNote(t,z);
+					// 匹配location.pathname与location.search
+					(z=items[t])&&z.path==path&&(
+						!z.swords||W&&
+						z.swords.length==W.length&&
+						z.swords.every(function(t){
+							return~W.indexOf(t)
+						})
+					)&&phNote.addNote(t,z);
 				}):(//log(items),
 					items={},
 					storage('phnote',null)
@@ -44,9 +55,8 @@ null==sto||(
 				pref.setKeyboard&&this.setKey();
 			},
 			addNote:function(idx,note){
-				note=note||{};
-				this.setCss();
-				var z,box=cEle('div')('className','phnote_container')(),
+				note=note||{},this.setCss();
+				var x,box=cEle('div')('className','phnote_container')(),
 				head=box.appendChild(cEle('div')
 					('className','phnote_head')
 					('innerHTML','<a class=phnote_save title=保存>s</a><a class=phnote_close title=删除>x</a>'+(note.modi?this.setDate(note.modi):'未保存'))()
@@ -57,16 +67,14 @@ null==sto||(
 					('contentEditable',true)()
 				),
 				save=function(e){
-					var now=new Date,modi='click'!=e.type&&note.modi;
-					modi||(head.lastChild.nodeValue=phNote.setDate(now));
-					items[idx=idx||'p'+now]=note={
-						path:path,modi:modi||now,
-						content:content.innerHTML,
-						css:box.style.cssText
+					x=+new Date;
+					items[idx=idx||'p'+x]=note={
+						modi:'click'!=e.type&&note.modi||(head.lastChild.nodeValue=phNote.setDate(x),x),
+						content:content.innerHTML,css:box.style.cssText,path:path,swords:W
 					};
 					storage('phnote',JSON.stringify(items));
 				};
-				box.style.cssText=note.css||'left:'+(z=this.setPos()).x+'px;top:'+z.y+'px';
+				box.style.cssText=note.css||'left:'+(x=this.setPos()).x+'px;top:'+x.y+'px';
 				this.setDrag(body.appendChild(box),head,save);
 				bind('click',save,$('.phnote_save',head));
 				bind('click',function(){
@@ -82,14 +90,14 @@ null==sto||(
 				var r=/^(?:alt|ctrl|meta|shift)$/i,
 				keys=pref.setKeyboard.split('+').map(function(t){
 					return+(t=t.trim())||(
-						t.length<3?t.toUpperCase().charCodeAt(0):
+						t.length<3?t.toUpperCase().charCodeAt():
 						r.test(t)?t.toLowerCase()+'Key':0
 					)
 				}).filter(function(t){return t});
 				bind('keyup',function(e){
-					keys.every(function(t){
-						return e[t]||t==e.keyCode
-					})&&(
+					keys.some(function(t){
+						return!e[t]&&t!=e.keyCode
+					})||(
 						e.preventDefault(),
 						phNote.addNote().focus()
 					)
@@ -210,7 +218,7 @@ null==sto||(
 			return null!=key&&(
 				val===''+val||val===+val?
 				sto.setItem(key,val):
-				sto[val===void 0?'getItem':'removeItem'](key)
+				sto[val===undefined?'getItem':'removeItem'](key)
 			);
 		}
 		function cEle(e){
@@ -222,9 +230,11 @@ null==sto||(
 		function $(z,con){
 			return(con||document).querySelector(z);
 		}
+		// 对象字面量
 		function isObj(z){
 			return{}.toString.call(z)=='[object Object]'&&'isPrototypeOf'in z;
 		}
+		// 空的对象字面量
 		function isEmptyObj(z,t){
 			for(t in z)
 			return false;

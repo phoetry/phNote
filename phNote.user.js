@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name phNote.user.js
-// @version v0.3
+// @version 0.3
 // @description 在你感兴趣的网页上添加便笺或笔记
 // @author phoetry (http://phoetry.me)
 // @url http://phoetry.me/archives/phnote.html

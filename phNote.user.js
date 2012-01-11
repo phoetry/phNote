@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name phNote.user.js
-// @version v0.2
+// @version v0.3
 // @description 在你感兴趣的网页上添加便笺或笔记
 // @author phoetry (http://phoetry.me)
 // @url http://phoetry.me/archives/phnote.html
-// @include http*
+// @exclude https*
 // ==/UserScript==
 !function(sto){"use strict";
 null==sto||(
@@ -42,8 +42,8 @@ null==sto||(
 				Object.keys(items).forEach(function(t,z){
 					// 匹配location.pathname与location.search
 					(z=items[t])&&z.path==path&&(
-						!z.swords||W&&
-						z.swords.length==W.length&&
+						!z.swords||
+						W&&W.length==z.swords.length&&
 						z.swords.every(function(t){
 							return~W.indexOf(t)
 						})
@@ -94,13 +94,11 @@ null==sto||(
 						r.test(t)?t.toLowerCase()+'Key':0
 					)
 				}).filter(function(t){return t});
-				bind('keyup',function(e){
-					keys.some(function(t){
-						return!e[t]&&t!=e.keyCode
-					})||(
-						e.preventDefault(),
-						phNote.addNote().focus()
-					)
+				bind('keyup',function(e,t){
+					(t=e.target).contentEditable=='true'||
+					~'INPUT TEXTAREA'.indexOf(t.nodeName)||
+					keys.some(function(t){return!e[t]&&t!=e.keyCode})||
+					(e.preventDefault(),phNote.addNote().focus())
 				});
 			},
 			setPos:function(){
